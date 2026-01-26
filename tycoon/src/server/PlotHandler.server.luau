@@ -1,5 +1,5 @@
 local Plots = game.Workspace.Plots
-
+local TemplatePlot = game.Workspace.TemplatePlot
 -- Player joins a game
 game.Players.PlayerAdded:Connect(function(player)
 	-- Get a plot
@@ -7,11 +7,73 @@ game.Players.PlayerAdded:Connect(function(player)
 		if plot:GetAttribute("Taken") then
 			continue
 		end
-		-- plot is not taken, so we want to take it
+
 		plot:SetAttribute("Taken", true)
 		plot:SetAttribute("Owner", player.UserId)
 
 		print("Plot has been given to " .. player.Name .. "!")
+
+		local ItemsFolder = Instance.new("Folder")
+		ItemsFolder.Name = "Items"
+		ItemsFolder.Parent = plot
+
+		-- Load buttons
+		local TemplateButtons = TemplatePlot.Buttons:Clone()
+		local TemplateItems = TemplatePlot.Items
+
+		for _, Button in TemplateButtons:GetChildren() do
+			-- Get the pos of the button relative to the template plot
+			-- How far away is button from the centre of the template plot (20,30)
+			local RelativeCFrame = TemplatePlot.CFrame:ToObjectSpace(Button.CFrame)
+			Button.CFrame = plot.CFrame:ToWorldSpace(RelativeCFrame)
+
+			Button.Touched:Connect(function(hit)
+				local player = game.Players:GetPlayerFromCharacter(hit.Parent)
+				if not player then
+					return
+				end
+				if plot:GetAttribute("Owner") ~= player.UserId then
+					return
+				end
+
+				-- TODO: remove currency / check enough currency
+				local itemToUnlockId = Button:GetAttribute("IdOfItemToUnlock")
+				if not itemToUnlockId then
+					warn("You forgot to add an IdOfItemToUnlock attribute")
+					return
+				end
+
+				for _, item in TemplateItems:GetChildren() do
+					if item:GetAttribute("Id") ~= itemToUnlockId then
+						continue
+					end
+					-- found correct item
+					-- clone it out and re-position for our plot
+					local itemClone = item:Clone()
+					local itemCFrame
+
+					if itemClone:IsA("Model") then
+						itemCFrame = itemClone:GetPivot() -- model
+					elseif itemClone:IsA("BasePart") then
+						itemCFrame = itemClone.CFrame
+					end
+
+					local relativeItemCFrame = TemplatePlot.CFrame:ToObjectSpace(itemCFrame)
+					local worldCFrameOfNewPlot = plot.CFrame:ToWorldSpace(relativeItemCFrame)
+
+					if itemClone:IsA("Model") then
+						itemClone:PivotTo(worldCFrameOfNewPlot)
+					elseif itemClone:IsA("BasePart") then
+						itemClone.CFrame = worldCFrameOfNewPlot
+					end
+
+					itemClone.Parent = TemplateButtons
+				end
+			end)
+
+			Button.Parent = TemplateButtons
+		end
+		TemplateButtons.Parent = plot
 		break
 	end
 end)
