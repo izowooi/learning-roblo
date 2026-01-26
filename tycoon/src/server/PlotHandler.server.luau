@@ -68,6 +68,7 @@ game.Players.PlayerAdded:Connect(function(player)
 					end
 
 					itemClone.Parent = TemplateButtons
+					Button:Destroy()
 				end
 			end)
 
