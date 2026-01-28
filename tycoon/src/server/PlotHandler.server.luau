@@ -43,6 +43,15 @@ game.Players.PlayerAdded:Connect(function(player)
 					return
 				end
 
+				local Price = Button:GetAttribute("Price")
+				if Price then
+					if player.leaderstats.Cash.Value < Price then
+						warn("Not enough cash to unlock this item.")
+						return
+					end
+					player.leaderstats.Cash.Value = player.leaderstats.Cash.Value - Price
+				end
+
 				for _, item in TemplateItems:GetChildren() do
 					if item:GetAttribute("Id") ~= itemToUnlockId then
 						continue
