@@ -243,3 +243,7 @@ Workspace의 모든 인스턴스와 변경사항은 자동 복제된다. 그러�
 3-4주차에는 PvP 전투로 클라이언트-서버 히트 감지를, 라운드 기반 게임으로 게임 스테이트 관리를 배운다. DevForum과 RoDevs Discord에 가입하여 커뮤니티와 소통하고, 복잡한 시뮬레이터와 MMO-lite 프로젝트로 네트워크 최적화와 시스템 통합 역량을 쌓는다.
 
 경험 있는 개발자에게 Roblox의 진입 장벽은 높지 않다. 핵심은 **1-indexed 배열**, **클라이언트 불신**, **DataStore 에러 처리**라는 세 가지 함정을 인지하고, 프로젝트 기반으로 빠르게 실습하는 것이다. 공식 문서와 DevForum을 적극 활용하면, 몇 주 안에 수백만 플레이어를 대상으로 게임을 출시할 준비가 된다.
+
+
+## 학습한 주소
+https://create.roblox.com/docs/ko-kr/tutorials/curriculums/gameplay-scripting/create-teams
