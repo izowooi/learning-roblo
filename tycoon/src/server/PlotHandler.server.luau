@@ -36,6 +36,14 @@ game.Players.PlayerAdded:Connect(function(player)
 					return
 				end
 
+				if Button:GetAttribute("Debounce") then
+					return
+				end
+				Button:SetAttribute("Debounce", true)
+				task.delay(1, function()
+					Button:SetAttribute("Debounce", false)
+				end)
+
 				-- TODO: remove currency / check enough currency
 				local itemToUnlockId = Button:GetAttribute("IdOfItemToUnlock")
 				if not itemToUnlockId then
@@ -74,6 +82,12 @@ game.Players.PlayerAdded:Connect(function(player)
 						itemClone:PivotTo(worldCFrameOfNewPlot)
 					elseif itemClone:IsA("BasePart") then
 						itemClone.CFrame = worldCFrameOfNewPlot
+					end
+
+					for _, descendant in itemClone:GetDescendants() do
+						if descendant:IsA("BaseScript") then
+							script.Enabled = true
+						end
 					end
 
 					itemClone.Parent = TemplateButtons
