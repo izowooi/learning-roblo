@@ -21,8 +21,14 @@ local function playerAdded(player)
 			player:Kick()
 		end)
 
-		if player:IsDescendantOf(game.Players) == true then
+		if player:IsDescendantOf(game.Players) then
 			Profiles[player] = profile
+
+			-- cash.Changed:Connect(function()
+			-- 	profile.Data.Cash = cash.Value
+			-- end)
+
+			print("Profile loaded for " .. player.Name)
 		else
 			profile:Release()
 		end
@@ -31,36 +37,36 @@ local function playerAdded(player)
 	end
 end
 
--- When a player joins the game
 game.Players.PlayerAdded:Connect(function(player)
 	playerAdded(player)
 
 	local profile = Profiles[player]
 	if not profile then
-		warn("No profile")
 		return
 	end
 
+	-- leaderstats 생성 (프로필 로드 후)
 	local folder = Instance.new("Folder")
 	folder.Name = "leaderstats"
 	folder.Parent = player
 
 	local cash = Instance.new("IntValue")
 	cash.Name = "Cash"
-	cash.Value = 0
+	cash.Value = profile.Data.Cash or 0
 	cash.Parent = folder
 
-	cash:GetAttributeChangedSignal("Value"):Connect(function()
+	cash:GetPropertyChangedSignal("Value"):Connect(function()
 		profile.Data.Cash = cash.Value
-		profile:SaveAsync()
 	end)
-	cash.Value = profile.Data.Cash
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
 	local profile = Profiles[player]
-
 	if profile then
 		profile:Release()
 	end
 end)
+
+for _, player in game.Players:GetPlayers() do
+	task.spawn(playerAdded, player)
+end
